@@ -28,13 +28,28 @@ export const ItemProvider = ({children}) => {
     await AsyncStorage.setItem('items', JSON.stringify(newItemsList));
   };
 
+  const editItem = async editedItem => {
+    const updatedItems = items.map(item =>
+      item.id === editedItem.id ? editedItem : item,
+    );
+    setItems(updatedItems);
+    await AsyncStorage.setItem('items', JSON.stringify(updatedItems));
+  };
+
+  const deleteItem = async itemId => {
+    const updatedItems = items.filter(item => item.id !== itemId);
+    setItems(updatedItems);
+    await AsyncStorage.setItem('items', JSON.stringify(updatedItems));
+  };
+
   const clearItems = async () => {
     setItems([]);
     await AsyncStorage.removeItem('items');
   };
 
   return (
-    <ItemContext.Provider value={{items, addItem, fetchItems, clearItems}}>
+    <ItemContext.Provider
+      value={{items, addItem, editItem, deleteItem, fetchItems, clearItems}}>
       {children}
     </ItemContext.Provider>
   );
