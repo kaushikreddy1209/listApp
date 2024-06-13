@@ -22,9 +22,19 @@ const ListScreen = () => {
             <Text style={styles.itemDescription}>{item.description}</Text>
           </View>
         )}
+        // eslint-disable-next-line react/no-unstable-nested-components
+        ListFooterComponent={() => (
+          <View style={styles.footer}>
+            <Button
+              title="Add Item"
+              onPress={() => navigation.navigate('AddItem')}
+            />
+          </View>
+        )}
       />
-      <Button title="Add Item" onPress={() => navigation.navigate('AddItem')} />
-      <Button title="Clear All Items" onPress={clearItems} color="red" />
+      <View style={styles.clearButtonContainer}>
+        <Button title="Clear All Items" onPress={clearItems} color="red" />
+      </View>
     </View>
   );
 };
@@ -47,6 +57,15 @@ const styles = StyleSheet.create({
   itemDescription: {
     fontSize: 14,
     color: '#666',
+  },
+  footer: {
+    marginTop: 20,
+  },
+  clearButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
   },
 });
 
