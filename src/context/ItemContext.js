@@ -28,8 +28,13 @@ export const ItemProvider = ({children}) => {
     await AsyncStorage.setItem('items', JSON.stringify(newItemsList));
   };
 
+  const clearItems = async () => {
+    setItems([]);
+    await AsyncStorage.removeItem('items');
+  };
+
   return (
-    <ItemContext.Provider value={{items, addItem, fetchItems}}>
+    <ItemContext.Provider value={{items, addItem, fetchItems, clearItems}}>
       {children}
     </ItemContext.Provider>
   );

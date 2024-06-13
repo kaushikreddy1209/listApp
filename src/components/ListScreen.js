@@ -5,7 +5,7 @@ import {useItemContext} from '../context/ItemContext';
 
 const ListScreen = () => {
   const navigation = useNavigation();
-  const {items, fetchItems} = useItemContext();
+  const {items, fetchItems, clearItems} = useItemContext();
 
   useEffect(() => {
     fetchItems();
@@ -24,6 +24,7 @@ const ListScreen = () => {
         )}
       />
       <Button title="Add Item" onPress={() => navigation.navigate('AddItem')} />
+      <Button title="Clear All Items" onPress={clearItems} color="red" />
     </View>
   );
 };
