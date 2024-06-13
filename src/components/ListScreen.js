@@ -1,37 +1,54 @@
-import React, {useContext} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {ItemContext} from '../context/ItemContext';
+import React, {useEffect} from 'react';
+import {View, Text, FlatList, Button, StyleSheet, Alert} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useItemContext} from '../context/ItemContext';
 
 const ListScreen = () => {
-  const {items, deleteItem} = useContext(ItemContext);
+  const navigation = useNavigation();
+  const {items, fetchItems, clearItems} = useItemContext();
 
-  const renderItem = ({item}) => (
-    <TouchableOpacity style={styles.itemContainer} onPress={() => {}}>
-      <View style={styles.itemTextContainer}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemDescription}>{item.description}</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => deleteItem(item.id)}>
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        await fetchItems();
+      } catch (error) {
+        Alert.alert('Error', 'Failed to fetch items from storage.');
+        console.error('Failed to fetch items from storage', error);
+      }
+    };
+
+    loadItems();
+  }, []);
+
+  const handleClearItems = async () => {
+    try {
+      await clearItems();
+      Alert.alert('Items Cleared', 'All items have been cleared successfully.');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to clear items.');
+      console.error('Failed to clear items', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>List of Items</Text>
       <FlatList
         data={items}
-        renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => (
+          <View style={styles.itemContainer}>
+            <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemDescription}>{item.description}</Text>
+          </View>
+        )}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No items found.</Text>
+          </View>
+        )}
       />
-      <TouchableOpacity style={styles.clearButton} onPress={() => {}}>
-        <Text style={styles.clearButtonText}>Clear All Items</Text>
-      </TouchableOpacity>
+      <Button title="Add Item" onPress={() => navigation.navigate('AddItem')} />
+      <Button title="Clear All Items" onPress={handleClearItems} color="red" />
     </View>
   );
 };
@@ -39,70 +56,30 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 16,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333333',
-  },
-  list: {
-    flexGrow: 1,
-    marginBottom: 20,
+    padding: 20,
   },
   itemContainer: {
-    backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 12,
-    borderRadius: 8,
-    shadowColor: '#000000',
-    shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: 20,
+    padding: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
   },
-  itemTextContainer: {
-    flex: 1,
-  },
-  itemName: {
+  itemText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
   },
   itemDescription: {
     fontSize: 14,
-    color: '#666666',
-    marginTop: 4,
+    color: '#666',
   },
-  deleteButton: {
-    backgroundColor: '#e74c3c',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  clearButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    borderRadius: 5,
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  clearButtonText: {
-    color: '#ffffff',
+  emptyText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#888',
   },
 });
 

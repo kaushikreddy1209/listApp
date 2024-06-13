@@ -1,16 +1,22 @@
+// screens/AddItemScreen.tsx
+
 import React, {useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useItemContext} from '../context/ItemContext';
 
-const AddItemScreen = () => {
-  const navigation = useNavigation();
+const AddItemScreen: React.FC = () => {
+  const [itemName, setItemName] = useState('');
+  const [itemDescription, setItemDescription] = useState('');
   const {addItem} = useItemContext();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const navigation = useNavigation();
 
-  const handleSave = () => {
-    addItem({name, description});
+  const handleAddItem = () => {
+    addItem({
+      id: Math.random().toString(),
+      name: itemName,
+      description: itemDescription,
+    });
     navigation.goBack();
   };
 
@@ -18,17 +24,17 @@ const AddItemScreen = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
+        placeholder="Item Name"
+        onChangeText={text => setItemName(text)}
+        value={itemName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
+        placeholder="Item Description"
+        onChangeText={text => setItemDescription(text)}
+        value={itemDescription}
       />
-      <Button title="Save" onPress={handleSave} />
+      <Button title="Add Item" onPress={handleAddItem} />
     </View>
   );
 };
@@ -39,11 +45,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   input: {
-    width: '100%',
+    height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
+    marginBottom: 20,
+    paddingHorizontal: 10,
     borderRadius: 5,
   },
 });

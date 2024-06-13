@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, Button, Modal, StyleSheet } from 'react-native';
+import {View, Text, Button, Modal, StyleSheet} from 'react-native';
 
-const ConfirmationDialog = ({ visible, message, onConfirm, onCancel }) => {
+const ConfirmationDialog = ({visible, message, onConfirm, onCancel}) => {
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <View style={styles.container}>
